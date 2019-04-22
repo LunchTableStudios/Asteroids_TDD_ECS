@@ -129,11 +129,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 325303069}
+  - component: {fileID: 325303066}
   - component: {fileID: 325303068}
   - component: {fileID: 325303067}
+  - component: {fileID: 325303072}
   - component: {fileID: 325303065}
   - component: {fileID: 325303070}
-  - component: {fileID: 325303066}
+  - component: {fileID: 325303071}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -240,7 +242,61 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Data:
-    Value: 0
+    Value: 0.1
+--- !u!114 &325303071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 325303064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db90ebcc1aaba4995b60cdc42eb1eb8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Data:
+    Value: 1
+--- !u!114 &325303072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 325303064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccea9ea98e38942e0b0938c27ed1903e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MotionType: 0
+  m_Mass: 1
+  m_LinearDamping: 0.01
+  m_AngularDamping: 0.05
+  m_InitialLinearVelocity:
+    x: 0
+    y: 0
+    z: 0
+  m_InitialAngularVelocity:
+    x: 0
+    y: 0
+    z: 0
+  m_GravityFactor: 0
+  m_OverrideDefaultMassDistribution: 0
+  m_CenterOfMass:
+    x: 0
+    y: 0
+    z: 0
+  m_Orientation:
+    Value:
+      x: 0
+      y: 0
+      z: 0
+    RotationOrder: 4
+  m_InertiaTensor:
+    x: 0.4
+    y: 0.4
+    z: 0.4
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

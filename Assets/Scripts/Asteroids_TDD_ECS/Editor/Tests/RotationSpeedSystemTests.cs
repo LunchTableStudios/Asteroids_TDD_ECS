@@ -9,15 +9,24 @@ namespace Asteroids_TDD_ECS.Editor.Tests
     [ Category( "Asteroids Tests" ) ]
     public class RotationSpeedSystemTests : ECSTestFixture
     {
-        [ Test ]
-        public void When_RotationSpeedEquals0_RotationDoesNotChange()
+        Entity entity;
+
+        [ SetUp ]
+        protected override void SetUp()
         {
-            Entity entity = _manager.CreateEntity(
+            base.SetUp();
+
+            entity = _manager.CreateEntity(
                 typeof( Rotation ),
                 typeof( RotationSpeed ),
                 typeof( DeltaTime )
             );
             _manager.SetComponentData( entity, new Rotation{ Value = quaternion.identity } );
+        }
+
+        [ Test ]
+        public void When_RotationSpeedEquals0_RotationDoesNotChange()
+        {
             _manager.SetComponentData( entity, new RotationSpeed{ Value = 0 } );
             _manager.SetComponentData( entity, new DeltaTime{ Value = 0.1f } );
 
@@ -36,12 +45,6 @@ namespace Asteroids_TDD_ECS.Editor.Tests
         [ TestCase( 1, 0.2f, 0.2f ) ]
         public void When_RotationSpeedNotEquals0_RotationChangesByDeltaOfSpeed( float speed, float deltaTime, float expectedZ )
         {
-            Entity entity = _manager.CreateEntity(
-                typeof( Rotation ),
-                typeof( RotationSpeed ),
-                typeof( DeltaTime )
-            );
-            _manager.SetComponentData( entity, new Rotation{ Value = quaternion.identity } );
             _manager.SetComponentData( entity, new RotationSpeed{ Value = speed } );
             _manager.SetComponentData( entity, new DeltaTime{ Value = deltaTime } );
 
