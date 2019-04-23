@@ -5,9 +5,9 @@ namespace Asteroids_TDD_ECS
     using Unity.Jobs;
     using Unity.Burst;
 
-    [ BurstCompile ]
     public class DeltaTimeSystem : JobComponentSystem
     {
+        [ BurstCompile ]
         private struct DeltaTimeJob : IJobForEach<DeltaTime>
         {
             public float deltaTime;
