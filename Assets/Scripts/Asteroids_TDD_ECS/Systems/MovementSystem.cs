@@ -34,7 +34,7 @@ namespace Asteroids_TDD_ECS
                 }
             }
 
-            public float3 CalculateImpulse( ArchetypeChunk chunk, int index )
+            private float3 CalculateImpulse( ArchetypeChunk chunk, int index )
             {
                 float input = chunk.GetNativeArray( movementInputType )[ index ].Value;
                 float speed = chunk.GetNativeArray( movementSpeedType )[ index ].Value;

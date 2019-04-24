@@ -10,20 +10,30 @@ namespace Asteroids_TDD_ECS.Editor.Tests
     [ Category( "Asteroids Tests" ) ]
     public class MovementTests : ECSTestFixture
     {
-        [ Test ]
-        public void MovementSystem_MovementInputIs0_ShipVelocityDoesNotChange()
+        private Entity entity;
+
+        [ SetUp ]
+        protected override void SetUp()
         {
-            Entity entity = _manager.CreateEntity(
+            base.SetUp();
+
+            entity = _manager.CreateEntity(
                 typeof( MovementInput ),
                 typeof( MovementSpeed ),
                 typeof( DeltaTime ),
-                typeof( PhysicsVelocity )
+                typeof( PhysicsVelocity ),
+                typeof( Rotation )
             );
             _manager.SetComponentData( entity, new MovementInput{ Value = 0 } );
             _manager.SetComponentData( entity, new MovementSpeed{ Value = 1 } );
             _manager.SetComponentData( entity, new DeltaTime{ Value = 0.01f } );
             _manager.SetComponentData( entity, new PhysicsVelocity{ Linear = float3.zero } );
+            _manager.SetComponentData( entity, new Rotation{ Value = quaternion.identity } );
+        }
 
+        [ Test ]
+        public void VelocityDoesNotChange_When_MovementInput0()
+        {
             float3 expectation = float3.zero;
 
             _world.CreateSystem<MovementSystem>().Update();
@@ -37,15 +47,8 @@ namespace Asteroids_TDD_ECS.Editor.Tests
         [ TestCase( 1, 0.01f, 0.01f ) ]
         [ TestCase( -1, 0.01f, -0.01f ) ]
         [ TestCase( 1, 0.02f, 0.02f ) ]
-        public void MovementSystem_MovementInputNot0_ShipVelocityYChangesByDeltaOfSpeed( float input, float time, float expectedY )
+        public void VelocityChangesByDelta_When_MovementInputNot0( float input, float time, float expectedY )
         {
-            Entity entity = _manager.CreateEntity(
-                typeof( MovementInput ),
-                typeof( MovementSpeed ),
-                typeof( DeltaTime ),
-                typeof( PhysicsVelocity ),
-                typeof( Rotation )
-            );
             _manager.SetComponentData( entity, new MovementInput{ Value = input } );
             _manager.SetComponentData( entity, new MovementSpeed{ Value = 1 } );
             _manager.SetComponentData( entity, new DeltaTime{ Value = time } );
@@ -62,15 +65,8 @@ namespace Asteroids_TDD_ECS.Editor.Tests
         }
 
         [ Test ]
-        public void MovementSystem_MovementInputNot0_ShipVelocityYChangesTowardsRotation()
+        public void VelocityChangesTowardsForward_When_MovementInputNot0()
         {
-            Entity entity = _manager.CreateEntity(
-                typeof( MovementInput ),
-                typeof( MovementSpeed ),
-                typeof( DeltaTime ),
-                typeof( PhysicsVelocity ),
-                typeof( Rotation )
-            );
             _manager.SetComponentData( entity, new MovementInput{ Value = 1 } );
             _manager.SetComponentData( entity, new MovementSpeed{ Value = 1 } );
             _manager.SetComponentData( entity, new DeltaTime{ Value = 0.01f } );

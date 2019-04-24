@@ -15,7 +15,7 @@ namespace Asteroids_TDD_ECS
 
             public void Execute( ref RotationInput input )
             {
-                input.Value = dKeyIsPressed ? 1 : aKeyIsPressed ? -1 : 0;
+                input.Value = dKeyIsPressed ? -1 : aKeyIsPressed ? 1 : 0;
             }
         }
 
