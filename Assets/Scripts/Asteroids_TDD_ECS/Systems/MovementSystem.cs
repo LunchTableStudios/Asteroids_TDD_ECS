@@ -32,6 +32,8 @@ namespace Asteroids_TDD_ECS
                         Linear = velocity.Linear + CalculateImpulse( chunk, index )
                     };
                 }
+
+                // velocities.Dispose();
             }
 
             private float3 CalculateImpulse( ArchetypeChunk chunk, int index )

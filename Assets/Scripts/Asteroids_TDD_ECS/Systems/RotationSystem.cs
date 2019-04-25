@@ -31,6 +31,8 @@ namespace Asteroids_TDD_ECS
                         Value = math.mul( math.normalize( rotation.Value ), CalculateRotationDelta( chunk, index ) )
                     };
                 }
+
+                // rotations.Dispose();
             }
 
             private quaternion CalculateRotationDelta( ArchetypeChunk chunk, int index )
