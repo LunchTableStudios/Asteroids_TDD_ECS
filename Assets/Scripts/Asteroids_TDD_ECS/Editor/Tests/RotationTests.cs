@@ -9,23 +9,23 @@ namespace Asteroids_TDD_ECS.Editor.Tests
     [ Category( "Asteroids Tests" ) ]
     public class RotationTests : ECSTestFixture
     {
-        private Entity entity;
+        private Entity m_entity;
 
         [ SetUp ]
         protected override void SetUp()
         {
             base.SetUp();
 
-            entity = _manager.CreateEntity(
+            m_entity = _manager.CreateEntity(
                 typeof( Rotation ),
                 typeof( RotationInput ),
                 typeof( RotationSpeed ),
                 typeof( DeltaTime )
             );
-            _manager.SetComponentData( entity, new Rotation{ Value = quaternion.identity } );
-            _manager.SetComponentData( entity, new RotationInput{ Value = 0 } );
-            _manager.SetComponentData( entity, new RotationSpeed{ Value = 1 } );
-            _manager.SetComponentData( entity, new DeltaTime{ Value = 0.01f } );
+            _manager.SetComponentData( m_entity, new Rotation{ Value = quaternion.identity } );
+            _manager.SetComponentData( m_entity, new RotationInput{ Value = 0 } );
+            _manager.SetComponentData( m_entity, new RotationSpeed{ Value = 1 } );
+            _manager.SetComponentData( m_entity, new DeltaTime{ Value = 0.01f } );
         }
 
         [ Test ]
@@ -35,7 +35,7 @@ namespace Asteroids_TDD_ECS.Editor.Tests
 
             _world.CreateSystem<RotationSystem>().Update();
 
-            quaternion result = _manager.GetComponentData<Rotation>( entity ).Value;
+            quaternion result = _manager.GetComponentData<Rotation>( m_entity ).Value;
 
             Assert.AreEqual( expectation, result );
         }
@@ -43,13 +43,13 @@ namespace Asteroids_TDD_ECS.Editor.Tests
         [ Test ]
         public void RotationChangesByDelta_When_RotationInputNot0()
         {
-            _manager.SetComponentData( entity, new RotationInput{ Value = 1 } );
+            _manager.SetComponentData( m_entity, new RotationInput{ Value = 1 } );
 
             quaternion expectation = quaternion.EulerXYZ( 0, 0, 0.01f );
 
             _world.CreateSystem<RotationSystem>().Update();
 
-            quaternion result = _manager.GetComponentData<Rotation>( entity ).Value;
+            quaternion result = _manager.GetComponentData<Rotation>( m_entity ).Value;
 
             Assert.AreEqual( expectation, result );
         }
