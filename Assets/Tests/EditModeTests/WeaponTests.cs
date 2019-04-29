@@ -63,6 +63,8 @@ namespace Tests
         [ Test ]
         public void FiredAtSetToCurrentTime_When_WeaponFiredComponentAdded()
         {
+            float mockFireTime = 2.2f;
+
             Entity weaponEntity = _manager.CreateEntity(
                 typeof( Weapon ),
                 typeof( ShootInput )
@@ -71,13 +73,50 @@ namespace Tests
             _manager.SetComponentData( weaponEntity, new ShootInput{ IsShooting = true } );
 
             WeaponFiringSystem firingSystem = _world.CreateSystem<WeaponFiringSystem>();
-            JobHandle handle = firingSystem.ProcessWeaponFiringJob( m_weaponQuery, m_commandBuffer, 2 );
+            JobHandle handle = firingSystem.ProcessWeaponFiringJob( m_weaponQuery, m_commandBuffer, mockFireTime );
 
-            float expectation = 2;
+            float expectation = mockFireTime;
 
             m_commandBuffer.Update();
 
             float result = _manager.GetComponentData<WeaponFired>( weaponEntity ).TimeFired;
+
+            Assert.AreEqual( expectation, result );
+        }
+
+        [ Test ]
+        public void WeaponFiredComponentRemoved_After_WeaponFireRateElapsed()
+        {
+            EntityQueryDesc weaponFiredQueryDesc = new EntityQueryDesc
+            {
+                All = new ComponentType[]{ typeof( Weapon ), typeof( WeaponFired ) },
+            };
+
+            EntityQuery weaponFiredQuery = _manager.CreateEntityQuery( weaponFiredQueryDesc );
+
+            Entity weaponEntity = _manager.CreateEntity(
+                typeof( Weapon ),
+                typeof( WeaponFired )
+            );
+            _manager.SetComponentData( weaponEntity, new Weapon{ FireRate = 1 } );
+            _manager.SetComponentData( weaponEntity, new WeaponFired{ TimeFired = 2.2f } );
+
+            WeaponFiredCleanupSystem cleanupSystem = _world.CreateSystem<WeaponFiredCleanupSystem>();
+            JobHandle handle = cleanupSystem.ProcessCleanupJob( weaponFiredQuery, m_commandBuffer, 4 );
+
+            float expectation = 1;
+
+            m_commandBuffer.Update();
+
+            EntityQueryDesc weaponQueryDesc = new EntityQueryDesc
+            {
+                All = new ComponentType[]{ typeof( Weapon ) },
+                None = new ComponentType[]{ typeof( WeaponFired ) }
+            };
+
+            EntityQuery weaponQuery = _manager.CreateEntityQuery( weaponQueryDesc );
+
+            float result = weaponQuery.CalculateLength();
 
             Assert.AreEqual( expectation, result );
         }
