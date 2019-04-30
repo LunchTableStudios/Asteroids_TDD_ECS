@@ -2,6 +2,7 @@ namespace Tests
 {
     using NUnit.Framework;
     using Unity.Entities;
+    using Unity.Jobs;
     using Unity.Transforms;
     using Unity.Mathematics;
     using Asteroids_TDD_ECS;
@@ -28,7 +29,10 @@ namespace Tests
 
             quaternion expectation = quaternion.EulerXYZ( 0, 0, input * speed * mockDeltaTime );
 
-            _world.CreateSystem<RotationSystem>().Update();
+            RotationSystem rotationSystem = _world.CreateSystem<RotationSystem>();
+            JobHandle handle = rotationSystem.ProcessRotationJob( mockDeltaTime );
+
+            handle.Complete();
 
             quaternion result = _manager.GetComponentData<Rotation>( entity ).Value;
 

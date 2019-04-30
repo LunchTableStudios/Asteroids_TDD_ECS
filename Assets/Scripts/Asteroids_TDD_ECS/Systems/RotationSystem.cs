@@ -1,5 +1,6 @@
 namespace Asteroids_TDD_ECS
 {
+    using UnityEngine;
     using Unity.Entities;
     using Unity.Collections;
     using Unity.Jobs;
@@ -20,9 +21,22 @@ namespace Asteroids_TDD_ECS
 
         protected override JobHandle OnUpdate( JobHandle inputDependencies )
         {
-            return inputDependencies;
+            RotationJob job = new RotationJob
+            {
+                DeltaTime = Time.deltaTime
+            };
+
+            return job.Schedule( this, inputDependencies );
         }
 
-        
+        public JobHandle ProcessRotationJob( float deltaTime, JobHandle inputDependencies = default( JobHandle ) )
+        {
+            RotationJob job = new RotationJob
+            {
+                DeltaTime = deltaTime
+            };
+            
+            return job.Schedule( this, inputDependencies );
+        }
     }
 }
