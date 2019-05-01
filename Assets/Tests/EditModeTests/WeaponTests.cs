@@ -39,6 +39,26 @@ namespace Tests
         }
 
         [ Test ]
+        public void ShootInputTrue_When_ProperButtonPressed()
+        {
+            Entity weaponEntity = _manager.CreateEntity(
+                typeof( Weapon ),
+                typeof( ShootInput )
+            );
+            _manager.SetComponentData( weaponEntity, new Weapon{ FireRate = 1 } );
+            _manager.SetComponentData( weaponEntity, new ShootInput{ IsShooting = false } );
+
+            ShootInputSystem inputSystem = _world.CreateSystem<ShootInputSystem>();
+            JobHandle handle = inputSystem.ProcessShootInputJob( true );
+
+            handle.Complete();
+
+            bool result = _manager.GetComponentData<ShootInput>( weaponEntity ).IsShooting;
+
+            Assert.IsTrue( result );
+        }
+
+        [ Test ]
         public void WeaponFiredComponentAddedToEntity_When_ShootInputTrue()
         {
             Entity weaponEntity = _manager.CreateEntity(

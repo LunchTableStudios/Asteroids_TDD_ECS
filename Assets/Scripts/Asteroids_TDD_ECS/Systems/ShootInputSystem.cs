@@ -20,9 +20,14 @@ namespace Asteroids_TDD_ECS
         {
             Keyboard currentKeyboard = Keyboard.current;
 
+            return ProcessShootInputJob( currentKeyboard.spaceKey.isPressed, inputDependencies );
+        }
+
+        public JobHandle ProcessShootInputJob( bool keyPressed, JobHandle inputDependencies = default( JobHandle ) )
+        {
             ShootInputJob job = new ShootInputJob
             {
-                ShootInputPressed = currentKeyboard.spaceKey.isPressed
+                ShootInputPressed = keyPressed
             };
 
             return job.Schedule( this, inputDependencies );

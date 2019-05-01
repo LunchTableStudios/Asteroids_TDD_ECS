@@ -4,6 +4,7 @@ namespace Tests
     using Unity.Entities;
     using Unity.Jobs;
     using Unity.Transforms;
+    using Unity.Physics;
     using Unity.Mathematics;
     using Asteroids_TDD_ECS;
 
@@ -12,11 +13,32 @@ namespace Tests
     public class MovementTests : ECSTestFixture
     {
         [ Test ]
+        [ TestCase( true, false, 1 ) ]
+        [ TestCase( false, true, -1 ) ]
+        [ TestCase( true, true, 0 ) ]
+        public void RotationInputCorrect_When_ProperButtonPressed( bool rotateLeft, bool rotateRight, int expectation )
+        {
+            Entity entity = _manager.CreateEntity(
+                typeof( RotationInput )
+            );
+            _manager.SetComponentData( entity, new RotationInput{ Value = 0 } );
+
+            RotationInputSystem inputSystem = _world.CreateSystem<RotationInputSystem>();
+            JobHandle handle = inputSystem.ProcessRotationInputJob( rotateLeft, rotateRight );
+
+            handle.Complete();
+
+            int result = _manager.GetComponentData<RotationInput>( entity ).Value;
+
+            Assert.AreEqual( expectation, result );
+        }
+
+        [ Test ]
         public void RotationChangesByDeltaOfSpeed_When_RotationInputNotEquals0()
         {
-            float input = 1;
+            int input = 1;
             float speed = 1;
-            float mockDeltaTime = 0.1f;
+            float mockDeltaTime = 0.01f;
 
             Entity entity = _manager.CreateEntity(
                 typeof( Rotation ),
@@ -35,6 +57,82 @@ namespace Tests
             handle.Complete();
 
             quaternion result = _manager.GetComponentData<Rotation>( entity ).Value;
+
+            Assert.AreEqual( expectation, result );
+        }
+
+        [ Test ]
+        public void MovementInputTrue_When_ProperButtonPressed()
+        {
+            Entity entity = _manager.CreateEntity(
+                typeof( MovementInput )
+            );
+            _manager.SetComponentData( entity, new MovementInput{ Value = 0 } );
+
+            MovementInputSystem inputSystem = _world.CreateSystem<MovementInputSystem>();
+            JobHandle handle = inputSystem.ProcessMovementInputJob( true );
+
+            int expectation = 1;
+
+            handle.Complete();
+
+            int result = _manager.GetComponentData<MovementInput>( entity ).Value;
+
+            Assert.AreEqual( expectation, result );
+        }
+
+        [ Test ]
+        public void VelocityChangesByDeltaOfSpeed_When_MovementInputNotEquals0()
+        {
+            float mockDeltaTime = 0.01f;
+
+            Entity entity = _manager.CreateEntity(
+                typeof( MovementInput ),
+                typeof( MovementSpeed ),
+                typeof( PhysicsVelocity ),
+                typeof( Rotation )
+            );
+            _manager.SetComponentData( entity, new PhysicsVelocity{ Linear = float3.zero } );
+            _manager.SetComponentData( entity, new MovementInput{ Value = 1 } );
+            _manager.SetComponentData( entity, new MovementSpeed{ Value = 1 } );
+            _manager.SetComponentData( entity, new Rotation{ Value = quaternion.identity } );
+
+            float3 expectation = new float3( 0, 0.01f, 0 );
+
+            MovementSystem movementSystem = _world.CreateSystem<MovementSystem>();
+            JobHandle handle = movementSystem.ProcessMovementJob( mockDeltaTime );
+
+            handle.Complete();
+
+            float3 result = _manager.GetComponentData<PhysicsVelocity>( entity ).Linear;
+
+            Assert.AreEqual( expectation, result );
+        }
+
+        [ Test ]
+        public void VelocityChangesTowardsRotation()
+        {
+            float mockDeltaTime = 0.01f;
+
+            Entity entity = _manager.CreateEntity(
+                typeof( MovementInput ),
+                typeof( MovementSpeed ),
+                typeof( PhysicsVelocity ),
+                typeof( Rotation )
+            );
+            _manager.SetComponentData( entity, new PhysicsVelocity{ Linear = float3.zero } );
+            _manager.SetComponentData( entity, new MovementInput{ Value = 1 } );
+            _manager.SetComponentData( entity, new MovementSpeed{ Value = 1 } );
+            _manager.SetComponentData( entity, new Rotation{ Value = quaternion.EulerXYZ( 0, 0, 1 ) } );
+
+            float3 expectation = math.mul( math.normalize( quaternion.EulerXYZ( 0, 0, 1 ) ), new float3( 0, 0.01f, 0 ) );
+
+            MovementSystem movementSystem = _world.CreateSystem<MovementSystem>();
+            JobHandle handle = movementSystem.ProcessMovementJob( mockDeltaTime );
+
+            handle.Complete();
+
+            float3 result = _manager.GetComponentData<PhysicsVelocity>( entity ).Linear;
 
             Assert.AreEqual( expectation, result );
         }

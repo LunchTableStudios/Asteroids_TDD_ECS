@@ -9,12 +9,17 @@ namespace Asteroids_TDD_ECS
     {
         private struct RotationInputJob : IJobForEach<RotationInput>
         {
-            public bool AKeyIsPressed;
-            public bool DKeyIsPressed;
+            public bool RotateLeftKeyIsPressed;
+            public bool RotateRightKeyIsPressed;
 
             public void Execute( ref RotationInput input )
             {
-                input.Value = AKeyIsPressed ? 1 : DKeyIsPressed ? -1 : 0;
+                int direction = 0;
+
+                direction += RotateLeftKeyIsPressed ? 1 : 0;
+                direction += RotateRightKeyIsPressed ? -1 : 0;
+
+                input.Value = direction;
             }
         }
 
@@ -22,10 +27,15 @@ namespace Asteroids_TDD_ECS
         {
             Keyboard currentKeyboard = Keyboard.current;
 
+            return ProcessRotationInputJob( currentKeyboard.aKey.isPressed, currentKeyboard.dKey.isPressed, inputDependencies );
+        }
+
+        public JobHandle ProcessRotationInputJob( bool leftKeyPressed, bool rightKeyPressed, JobHandle inputDependencies = default( JobHandle ) )
+        {
             RotationInputJob job = new RotationInputJob
             {
-                AKeyIsPressed = currentKeyboard.aKey.isPressed,
-                DKeyIsPressed = currentKeyboard.dKey.isPressed
+                RotateLeftKeyIsPressed = leftKeyPressed,
+                RotateRightKeyIsPressed = rightKeyPressed
             };
 
             return job.Schedule( this, inputDependencies );

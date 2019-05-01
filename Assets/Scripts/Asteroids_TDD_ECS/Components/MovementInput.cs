@@ -1,8 +1,8 @@
 namespace Asteroids_TDD_ECS
 {
     using Unity.Entities;
-    
-    public struct RotationInput : IComponentData
+
+    public struct MovementInput : IComponentData
     {
         public int Value;
     }
