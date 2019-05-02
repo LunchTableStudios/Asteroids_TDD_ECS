@@ -49,7 +49,7 @@ namespace Asteroids_TDD_ECS
                 CommandBuffer = buffer.CreateCommandBuffer()
             };
 
-            JobHandle handle = job.ScheduleSingle( query, inputDependencies );
+            JobHandle handle = job.Schedule( query, inputDependencies );
 
             buffer.AddJobHandleForProducer( handle );
 
