@@ -5,13 +5,12 @@ namespace Asteroids_TDD_ECS
 
     public class MovementProxy : MonoBehaviour, IConvertGameObjectToEntity
     {
-        private MovementInput m_inputData;
-
+        public Movement MovementData;
         public MovementSpeed SpeedData;
 
         public void Convert( Entity entity, EntityManager manager, GameObjectConversionSystem conversionSystem )
         {
-            manager.AddComponentData( entity, m_inputData );
+            manager.AddComponentData( entity, MovementData );
             manager.AddComponentData( entity, SpeedData );
         }
     }

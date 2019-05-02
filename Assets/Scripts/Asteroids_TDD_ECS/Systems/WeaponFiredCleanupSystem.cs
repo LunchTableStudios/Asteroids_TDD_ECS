@@ -5,6 +5,7 @@ namespace Asteroids_TDD_ECS
     using Unity.Collections;
     using Unity.Jobs;
 
+    [ UpdateInGroup( typeof( SimulationSystemGroup ) ) ]
     public class WeaponFiredCleanupSystem : JobComponentSystem
     {
         private EntityQuery m_weaponCleanupQuery;

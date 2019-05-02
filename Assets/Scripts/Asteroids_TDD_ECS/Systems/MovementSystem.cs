@@ -10,13 +10,13 @@ namespace Asteroids_TDD_ECS
 
     public class MovementSystem : JobComponentSystem
     {
-        private struct MovementJob : IJobForEach<MovementInput, MovementSpeed, Rotation, PhysicsVelocity>
+        private struct MovementJob : IJobForEach<Movement, MovementSpeed, Rotation, PhysicsVelocity>
         {
             public float DeltaTime;
 
-            public void Execute( [ ReadOnly ] ref MovementInput input, [ ReadOnly ] ref MovementSpeed speed, [ ReadOnly ] ref Rotation rotation, ref PhysicsVelocity velocity )
+            public void Execute( [ ReadOnly ] ref Movement movement, [ ReadOnly ] ref MovementSpeed speed, [ ReadOnly ] ref Rotation rotation, ref PhysicsVelocity velocity )
             {
-                velocity.Linear += math.mul( math.normalize( rotation.Value ), new float3( 0, input.Value * speed.Value * DeltaTime, 0 ) );
+                velocity.Linear += math.mul( math.normalize( rotation.Value ), movement.Value * speed.Value * DeltaTime );
             }
         }
 

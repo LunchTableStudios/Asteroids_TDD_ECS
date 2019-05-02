@@ -6,5 +6,8 @@ namespace Asteroids_TDD_ECS
     public struct Weapon : IComponentData
     {
         public float FireRate;
+
+        [ UnityEngine.HideInInspector ]
+        public Entity ProjectilePrefab;
     }
 }

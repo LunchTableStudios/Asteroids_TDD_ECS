@@ -49,34 +49,14 @@ namespace Tests
             _manager.SetComponentData( entity, new RotationInput{ Value = input } );
             _manager.SetComponentData( entity, new RotationSpeed{ Value = speed } );
 
-            quaternion expectation = quaternion.EulerXYZ( 0, 0, input * speed * mockDeltaTime );
 
             RotationSystem rotationSystem = _world.CreateSystem<RotationSystem>();
             JobHandle handle = rotationSystem.ProcessRotationJob( mockDeltaTime );
 
             handle.Complete();
 
+            quaternion expectation = quaternion.EulerXYZ( 0, 0, input * speed * mockDeltaTime );
             quaternion result = _manager.GetComponentData<Rotation>( entity ).Value;
-
-            Assert.AreEqual( expectation, result );
-        }
-
-        [ Test ]
-        public void MovementInputTrue_When_ProperButtonPressed()
-        {
-            Entity entity = _manager.CreateEntity(
-                typeof( MovementInput )
-            );
-            _manager.SetComponentData( entity, new MovementInput{ Value = 0 } );
-
-            MovementInputSystem inputSystem = _world.CreateSystem<MovementInputSystem>();
-            JobHandle handle = inputSystem.ProcessMovementInputJob( true );
-
-            int expectation = 1;
-
-            handle.Complete();
-
-            int result = _manager.GetComponentData<MovementInput>( entity ).Value;
 
             Assert.AreEqual( expectation, result );
         }
@@ -87,23 +67,22 @@ namespace Tests
             float mockDeltaTime = 0.01f;
 
             Entity entity = _manager.CreateEntity(
-                typeof( MovementInput ),
+                typeof( Movement ),
                 typeof( MovementSpeed ),
                 typeof( PhysicsVelocity ),
                 typeof( Rotation )
             );
             _manager.SetComponentData( entity, new PhysicsVelocity{ Linear = float3.zero } );
-            _manager.SetComponentData( entity, new MovementInput{ Value = 1 } );
+            _manager.SetComponentData( entity, new Movement{ Value = new float3( 0, 1, 0 ) } );
             _manager.SetComponentData( entity, new MovementSpeed{ Value = 1 } );
             _manager.SetComponentData( entity, new Rotation{ Value = quaternion.identity } );
-
-            float3 expectation = new float3( 0, 0.01f, 0 );
 
             MovementSystem movementSystem = _world.CreateSystem<MovementSystem>();
             JobHandle handle = movementSystem.ProcessMovementJob( mockDeltaTime );
 
             handle.Complete();
 
+            float3 expectation = new float3( 0, 0.01f, 0 );
             float3 result = _manager.GetComponentData<PhysicsVelocity>( entity ).Linear;
 
             Assert.AreEqual( expectation, result );
@@ -115,23 +94,22 @@ namespace Tests
             float mockDeltaTime = 0.01f;
 
             Entity entity = _manager.CreateEntity(
-                typeof( MovementInput ),
+                typeof( Movement ),
                 typeof( MovementSpeed ),
                 typeof( PhysicsVelocity ),
                 typeof( Rotation )
             );
             _manager.SetComponentData( entity, new PhysicsVelocity{ Linear = float3.zero } );
-            _manager.SetComponentData( entity, new MovementInput{ Value = 1 } );
+            _manager.SetComponentData( entity, new Movement{ Value = new float3( 0, 1, 0 ) } );
             _manager.SetComponentData( entity, new MovementSpeed{ Value = 1 } );
             _manager.SetComponentData( entity, new Rotation{ Value = quaternion.EulerXYZ( 0, 0, 1 ) } );
-
-            float3 expectation = math.mul( math.normalize( quaternion.EulerXYZ( 0, 0, 1 ) ), new float3( 0, 0.01f, 0 ) );
 
             MovementSystem movementSystem = _world.CreateSystem<MovementSystem>();
             JobHandle handle = movementSystem.ProcessMovementJob( mockDeltaTime );
 
             handle.Complete();
 
+            float3 expectation = math.mul( math.normalize( quaternion.EulerXYZ( 0, 0, 1 ) ), new float3( 0, 0.01f, 0 ) );
             float3 result = _manager.GetComponentData<PhysicsVelocity>( entity ).Linear;
 
             Assert.AreEqual( expectation, result );

@@ -14,6 +14,7 @@ namespace Tests
         EntityQuery m_weaponQuery;
         EntityQuery m_weaponWasFiredQuery;
 
+
         BeginInitializationEntityCommandBufferSystem m_commandBuffer;
 
         [ SetUp ]
@@ -33,7 +34,6 @@ namespace Tests
 
             m_weaponWasFiredQuery = _manager.CreateEntityQuery(
                 typeof( Weapon ),
-                typeof( ShootInput ),
                 typeof( WeaponFired )
             );
         }
@@ -71,10 +71,9 @@ namespace Tests
             WeaponFiringSystem firingSystem = _world.CreateSystem<WeaponFiringSystem>();
             JobHandle handle = firingSystem.ProcessWeaponFiringJob( m_weaponQuery, m_commandBuffer, 0 );
 
-            int expectation = 1;
-
             m_commandBuffer.Update();
             
+            int expectation = 1;
             int result = m_weaponWasFiredQuery.CalculateLength();
 
             Assert.AreEqual( expectation, result );
@@ -95,10 +94,10 @@ namespace Tests
             WeaponFiringSystem firingSystem = _world.CreateSystem<WeaponFiringSystem>();
             JobHandle handle = firingSystem.ProcessWeaponFiringJob( m_weaponQuery, m_commandBuffer, mockFireTime );
 
-            float expectation = mockFireTime;
 
             m_commandBuffer.Update();
 
+            float expectation = mockFireTime;
             float result = _manager.GetComponentData<WeaponFired>( weaponEntity ).TimeFired;
 
             Assert.AreEqual( expectation, result );
@@ -107,13 +106,6 @@ namespace Tests
         [ Test ]
         public void WeaponFiredComponentRemoved_After_WeaponFireRateElapsed()
         {
-            EntityQueryDesc weaponFiredQueryDesc = new EntityQueryDesc
-            {
-                All = new ComponentType[]{ typeof( Weapon ), typeof( WeaponFired ) },
-            };
-
-            EntityQuery weaponFiredQuery = _manager.CreateEntityQuery( weaponFiredQueryDesc );
-
             Entity weaponEntity = _manager.CreateEntity(
                 typeof( Weapon ),
                 typeof( WeaponFired )
@@ -122,9 +114,8 @@ namespace Tests
             _manager.SetComponentData( weaponEntity, new WeaponFired{ TimeFired = 2.2f } );
 
             WeaponFiredCleanupSystem cleanupSystem = _world.CreateSystem<WeaponFiredCleanupSystem>();
-            JobHandle handle = cleanupSystem.ProcessCleanupJob( weaponFiredQuery, m_commandBuffer, 4 );
+            JobHandle handle = cleanupSystem.ProcessCleanupJob( m_weaponWasFiredQuery, m_commandBuffer, 4 );
 
-            float expectation = 1;
 
             m_commandBuffer.Update();
 
@@ -136,6 +127,7 @@ namespace Tests
 
             EntityQuery weaponQuery = _manager.CreateEntityQuery( weaponQueryDesc );
 
+            float expectation = 1;
             float result = weaponQuery.CalculateLength();
 
             Assert.AreEqual( expectation, result );
