@@ -11,6 +11,7 @@ namespace Tests
     [ Category( "Asteroids Tests" ) ]
     public class ProjectileTests : ECSTestFixture
     {
+        private EntityQuery m_weaponFiredQuery;
         private Entity m_weaponEntity;
         private Entity m_projectileEntity;
 
@@ -35,6 +36,13 @@ namespace Tests
             _manager.SetComponentData( m_weaponEntity, new WeaponFired{ TimeFired = 0 } );
             _manager.SetComponentData( m_weaponEntity, new Rotation{ Value = quaternion.identity } );
             _manager.SetComponentData( m_weaponEntity, new Translation{ Value = float3.zero } );
+
+            m_weaponFiredQuery = _manager.CreateEntityQuery(
+                typeof( Weapon ),
+                typeof( WeaponFired ),
+                typeof( Rotation ),
+                typeof( Translation )
+            );
         }
 
         [ Test ]
@@ -44,7 +52,7 @@ namespace Tests
             BeginInitializationEntityCommandBufferSystem projectileEntityCommandBuffer = _world.GetOrCreateSystem<BeginInitializationEntityCommandBufferSystem>();
 
             SpawnProjectileSystem spawnSystem = _world.CreateSystem<SpawnProjectileSystem>();
-            JobHandle handle = spawnSystem.ProcessSpawnProjectileJob( projectileEntityCommandBuffer );
+            JobHandle handle = spawnSystem.ProcessSpawnProjectileJob( m_weaponFiredQuery, projectileEntityCommandBuffer );
 
             projectileEntityCommandBuffer.Update();
 
@@ -66,7 +74,7 @@ namespace Tests
             BeginInitializationEntityCommandBufferSystem projectileEntityCommandBuffer = _world.GetOrCreateSystem<BeginInitializationEntityCommandBufferSystem>();
 
             SpawnProjectileSystem spawnSystem = _world.CreateSystem<SpawnProjectileSystem>();
-            JobHandle handle = spawnSystem.ProcessSpawnProjectileJob( projectileEntityCommandBuffer );
+            JobHandle handle = spawnSystem.ProcessSpawnProjectileJob( m_weaponFiredQuery, projectileEntityCommandBuffer );
 
             projectileEntityCommandBuffer.Update();
 
@@ -90,7 +98,7 @@ namespace Tests
             BeginInitializationEntityCommandBufferSystem projectileEntityCommandBuffer = _world.GetOrCreateSystem<BeginInitializationEntityCommandBufferSystem>();
 
             SpawnProjectileSystem spawnSystem = _world.CreateSystem<SpawnProjectileSystem>();
-            JobHandle handle = spawnSystem.ProcessSpawnProjectileJob( projectileEntityCommandBuffer );
+            JobHandle handle = spawnSystem.ProcessSpawnProjectileJob( m_weaponFiredQuery, projectileEntityCommandBuffer );
 
             projectileEntityCommandBuffer.Update();
 

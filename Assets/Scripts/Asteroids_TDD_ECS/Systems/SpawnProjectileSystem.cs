@@ -8,6 +8,7 @@ namespace Asteroids_TDD_ECS
     // [ UpdateInGroup( typeof( SimulationSystemGroup ) ) ]
     public class SpawnProjectileSystem : JobComponentSystem
     {
+        private EntityQuery m_weaponFiringQuery;
         private BeginInitializationEntityCommandBufferSystem m_projectileEntityCommandBuffer;
 
         private struct SpawnProjectileJob : IJobForEach<Weapon, WeaponFired, Rotation, Translation>
@@ -24,22 +25,31 @@ namespace Asteroids_TDD_ECS
 
         protected override void OnCreate()
         {
+            m_weaponFiringQuery = GetEntityQuery(
+                typeof( Weapon ),
+                typeof( WeaponFired ),
+                typeof( Rotation ),
+                typeof( Translation )
+            );
+
             m_projectileEntityCommandBuffer = World.GetOrCreateSystem<BeginInitializationEntityCommandBufferSystem>();
+
+            m_weaponFiringQuery.SetFilterChanged( typeof( WeaponFired ) );
         }
 
         protected override JobHandle OnUpdate( JobHandle inputDependencies )
         {
-            return ProcessSpawnProjectileJob( m_projectileEntityCommandBuffer, inputDependencies );
+            return ProcessSpawnProjectileJob( m_weaponFiringQuery, m_projectileEntityCommandBuffer, inputDependencies );
         }
 
-        public JobHandle ProcessSpawnProjectileJob( BeginInitializationEntityCommandBufferSystem buffer, JobHandle inputDependencies = default( JobHandle ) )
+        public JobHandle ProcessSpawnProjectileJob( EntityQuery query, BeginInitializationEntityCommandBufferSystem buffer, JobHandle inputDependencies = default( JobHandle ) )
         {
             SpawnProjectileJob job = new SpawnProjectileJob
             {
                 CommandBuffer = buffer.CreateCommandBuffer()
             };
 
-            JobHandle handle = job.Schedule( this, inputDependencies );
+            JobHandle handle = job.ScheduleSingle( query, inputDependencies );
 
             buffer.AddJobHandleForProducer( handle );
 
