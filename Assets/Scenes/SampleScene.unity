@@ -133,11 +133,11 @@ GameObject:
   - component: {fileID: 325303068}
   - component: {fileID: 325303067}
   - component: {fileID: 325303072}
-  - component: {fileID: 325303074}
-  - component: {fileID: 325303070}
-  - component: {fileID: 325303071}
-  - component: {fileID: 325303073}
   - component: {fileID: 325303065}
+  - component: {fileID: 325303071}
+  - component: {fileID: 325303070}
+  - component: {fileID: 325303073}
+  - component: {fileID: 325303074}
   m_Layer: 0
   m_Name: Ship
   m_TagString: Untagged
@@ -160,7 +160,7 @@ MonoBehaviour:
   ProjectilePrefab: {fileID: 6215214053012057133, guid: 7a373310812be4c9bb757158e0950fc7,
     type: 3}
   WeaponData:
-    FireRate: 1
+    FireRate: 2
 --- !u!114 &325303066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,7 +218,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 325303064}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &325303069
 Transform:
   m_ObjectHideFlags: 0
@@ -242,11 +242,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 325303064}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80a871cb3fa2c4013a37da7ecae45916, type: 3}
+  m_Script: {fileID: 11500000, guid: 4345088515bce4309807344f5d8a332c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpeedData:
-    Value: 2
 --- !u!114 &325303071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -265,7 +263,7 @@ MonoBehaviour:
       y: 0
       z: 0
   SpeedData:
-    Value: 2
+    Value: 4
 --- !u!114 &325303072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315,15 +313,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 325303064}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d6c27cd2b8034992880389539531ccb, type: 3}
+  m_Script: {fileID: 11500000, guid: 80a871cb3fa2c4013a37da7ecae45916, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HorizontalScreenWrapData:
-    Min: -9.5
-    Max: 9.5
-  VerticalScreenWrapData:
-    Min: -5.5
-    Max: 5.5
+  SpeedData:
+    Value: 2.5
 --- !u!114 &325303074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -333,9 +327,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 325303064}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4345088515bce4309807344f5d8a332c, type: 3}
+  m_Script: {fileID: 11500000, guid: 9d6c27cd2b8034992880389539531ccb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HorizontalScreenWrapData:
+    Min: -9.5
+    Max: 9.5
+  VerticalScreenWrapData:
+    Min: -5.5
+    Max: 5.5
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

@@ -93,8 +93,7 @@ namespace Tests
 
             WeaponFiringSystem firingSystem = _world.CreateSystem<WeaponFiringSystem>();
             JobHandle handle = firingSystem.ProcessWeaponFiringJob( m_weaponQuery, m_commandBuffer, mockFireTime );
-
-
+            
             m_commandBuffer.Update();
 
             float expectation = mockFireTime;
@@ -115,7 +114,6 @@ namespace Tests
 
             WeaponFiredCleanupSystem cleanupSystem = _world.CreateSystem<WeaponFiredCleanupSystem>();
             JobHandle handle = cleanupSystem.ProcessCleanupJob( m_weaponWasFiredQuery, m_commandBuffer, 4 );
-
 
             m_commandBuffer.Update();
 

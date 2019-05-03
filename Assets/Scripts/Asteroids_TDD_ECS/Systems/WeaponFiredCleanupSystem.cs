@@ -18,7 +18,9 @@ namespace Asteroids_TDD_ECS
 
             public void Execute( Entity entity, int jobIndex, [ ReadOnly ] ref Weapon weapon, ref WeaponFired fired )
             {
-                if( Time > weapon.FireRate + fired.TimeFired )
+                float timeDiff = 1 / weapon.FireRate;
+
+                if( Time > fired.TimeFired + timeDiff )
                 {
                     CommandBuffer.RemoveComponent<WeaponFired>( entity );
                 }

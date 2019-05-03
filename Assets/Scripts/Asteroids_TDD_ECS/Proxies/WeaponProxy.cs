@@ -18,9 +18,10 @@ namespace Asteroids_TDD_ECS
 
         public void Convert( Entity entity, EntityManager manager, GameObjectConversionSystem convertionSystem )
         {
+            WeaponData.ProjectilePrefab = convertionSystem.GetPrimaryEntity( ProjectilePrefab );
+
             manager.AddComponentData( entity, m_shootInputData );
 
-            WeaponData.ProjectilePrefab = convertionSystem.GetPrimaryEntity( ProjectilePrefab );
             manager.AddComponentData( entity, WeaponData );
         }
     }

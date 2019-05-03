@@ -11,15 +11,35 @@ namespace Asteroids_TDD_ECS
         private EntityQuery m_weaponFiringQuery;
         private BeginInitializationEntityCommandBufferSystem m_projectileEntityCommandBuffer;
 
-        private struct SpawnProjectileJob : IJobForEach<Weapon, WeaponFired, Rotation, Translation>
+        private struct SpawnProjectileJob : IJobChunk
         {
+            [ ReadOnly ] public ArchetypeChunkComponentType<Weapon> WeaponType;
+            [ ReadOnly ] public ArchetypeChunkComponentType<Rotation> RotationType;
+            [ ReadOnly ] public ArchetypeChunkComponentType<Translation> TranslationType;
             [ ReadOnly ] public EntityCommandBuffer CommandBuffer;
+            public uint LastSystemVersion;
 
-            public void Execute( [ ReadOnly ] ref Weapon weapon, [ ReadOnly ] ref WeaponFired fired, [ ReadOnly ] ref Rotation rotation, [ ReadOnly ] ref Translation translation )
+            public void Execute( ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex )
             {
-                Entity projectileEntity = CommandBuffer.Instantiate( weapon.ProjectilePrefab );
-                CommandBuffer.SetComponent( projectileEntity, new Rotation{ Value = rotation.Value } );
-                CommandBuffer.SetComponent( projectileEntity, new Translation{ Value = translation.Value } );
+                bool weaponFiredChanged = chunk.DidChange<Weapon>( WeaponType, LastSystemVersion );
+
+                if( !weaponFiredChanged  )
+                    return;
+
+                var chunkWeapons = chunk.GetNativeArray( WeaponType );
+                var chunkTranslations = chunk.GetNativeArray( TranslationType );
+                var chunkRotations = chunk.GetNativeArray( RotationType );
+
+                for( int i = 0; i < chunk.Count; i++ )
+                {
+                    Weapon weapon = chunkWeapons[i];
+                    Translation translation = chunkTranslations[i];
+                    Rotation rotation = chunkRotations[i];
+
+                    Entity projectile = CommandBuffer.Instantiate( weapon.ProjectilePrefab );
+                    CommandBuffer.SetComponent( projectile, new Translation{ Value = translation.Value } );
+                    CommandBuffer.SetComponent( projectile, new Rotation{ Value = rotation.Value } );
+                }
             }
         }
 
@@ -34,7 +54,7 @@ namespace Asteroids_TDD_ECS
 
             m_projectileEntityCommandBuffer = World.GetOrCreateSystem<BeginInitializationEntityCommandBufferSystem>();
 
-            m_weaponFiringQuery.SetFilterChanged( typeof( WeaponFired ) );
+            m_weaponFiringQuery.SetFilterChanged( typeof( Weapon ) );
         }
 
         protected override JobHandle OnUpdate( JobHandle inputDependencies )
@@ -46,6 +66,10 @@ namespace Asteroids_TDD_ECS
         {
             SpawnProjectileJob job = new SpawnProjectileJob
             {
+                LastSystemVersion = this.LastSystemVersion,
+                WeaponType = GetArchetypeChunkComponentType<Weapon>( true ),
+                RotationType = GetArchetypeChunkComponentType<Rotation>( true ),
+                TranslationType = GetArchetypeChunkComponentType<Translation>( true ),
                 CommandBuffer = buffer.CreateCommandBuffer()
             };
 

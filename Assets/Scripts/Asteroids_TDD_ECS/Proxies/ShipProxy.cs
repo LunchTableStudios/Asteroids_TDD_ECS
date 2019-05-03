@@ -9,6 +9,7 @@ namespace Asteroids_TDD_ECS
 
         public void Convert( Entity entity, EntityManager manager, GameObjectConversionSystem conversionSystem )
         {
+            
             manager.AddComponentData( entity, m_inputData );
         }
     }
